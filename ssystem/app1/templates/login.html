@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}
+    <style>
+        /* 基础样式重置 */
+        body, html {
+            background-image: url("{% static 'images/1.gif' %}");
+            background-size: cover;  /* 保证背景图覆盖整个页面 */
+            background-position: center;  /* 让背景图居中显示 */
+            background-repeat: no-repeat;  /* 防止背景图重复 */
+            margin: 0;
+            height: 100vh;
+        }
+
+        /* 添加Logo定位样式 */
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 200px; /* 你可以根据需要调整logo大小 */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* 表单标题样式 */
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* 表单字段样式 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* 提交按钮样式 */
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* 错误消息样式 */
+        .error-msg {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 添加logo
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+   -->
+    <div class="container">
+        <h2>欢迎使用比赛成绩管理系统</h2>
+        <h2>用户登录</h2>
+        <!-- ... 其他代码 ... -->
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}<br>
+                    {{ field }}<br>
+                </div>
+            {% endfor %}
+            <div class="form-group">
+                <img src="{% url 'getpng' %}" alt="验证码" onclick="this.src='{% url 'getpng' %}?' + Math.random();">
+                <a><font size=2>点击图片刷新</font></a><br>
+            </div>
+            <button type="submit" class="submit-btn">登录</button>
+            <a href="{% url 'register' %}" class="register-btn">注册</a>
+        </form>
+        {% if error %}
+            <p class="error-msg">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* 基础样式重置 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        /* 容器样式 */
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* 表单标题样式 */
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* 表单字段样式 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* 提交按钮样式 */
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* 错误消息样式 */
+        .error-msg {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>用户注册</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+    <div class="form-group">
+        {{ field.label_tag }}<br>
+        {{ field }}<br>
+        {% for error in field.errors %}
+            <p style="color: red;">{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endfor %} <!-- 使用这个来自动渲染表单字段 -->
+            <button type="submit" class="submit-btn">注册</button>
+	<a href="{% url 'login' %}" class="register-btn">返回登录界面</a>
+            {% if error %}
+                <p class="error-msg">{{ error }}</p>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>

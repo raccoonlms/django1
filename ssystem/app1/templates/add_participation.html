@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理界面</title>
+    {% load static %}
+    <style>
+        /* 全局样式设置 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            height: 100vh;
+        }
+
+        /* 添加Logo定位样式 */
+        .logo {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 220px;
+        }
+
+        /* 工具栏样式 */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            border-bottom: 1px solid #ccc;
+        }
+
+        .toolbar .left-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .toolbar input[type="text"] {
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .toolbar button {
+            padding: 5px 10px;
+            margin-left: 5px;
+            border: none;
+            background-image: linear-gradient(to top, #00c6fb 0%, #005bea 100%);
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .toolbar button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 按钮栏样式 */
+        .button-bar {
+            display: flex;
+            justify-content: flex-start;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .button-bar button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            background-image: linear-gradient(to top, #00c6fb 0%, #005bea 100%);
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .button-bar button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 主要内容区域样式 */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);
+        }
+
+        /* 输入栏样式 */
+        .input-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .input-row label {
+            width: 100px;
+            margin-right: 10px;
+        }
+
+        .input-row input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* 按钮组样式 */
+        .buttons {
+            margin-bottom: 10px;
+        }
+
+        /* 表格样式 */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%);
+        }
+
+        .table th, .table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+        }
+
+        /* 分页样式 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .pagination a, .pagination span {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .pagination .current-page {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .pagination .disabled {
+            color: #ccc;
+            pointer-events: none;
+        }
+
+        .checkbox-column {
+            text-align: center;
+        }
+	 /* 下拉框悬浮效果 */
+    .input-row select:hover {
+        border-color: #0056b3; /* 悬浮时改变边框颜色 */
+        background-color: #f0f8ff; /* 悬浮时改变背景颜色 */
+    }
+
+    .input-row select:focus {
+        border-color: #0056b3; /* 聚焦时改变边框颜色 */
+        background-color: #f0f8ff; /* 聚焦时改变背景颜色 */
+    }
+    </style>
+</head>
+
+<body>
+  <!-- 工具栏 -->
+    <div class="toolbar">
+        <div class="left-section">
+            <a>管理员</a>
+            <a href="{% url 'logout' %}" class="register-btn"><button>退出登录</button></a>
+            <!--
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+            -->
+        </div>
+    </div>
+
+    <!-- 按钮栏 -->
+    <div class="button-bar">
+        <a href="{% url 'admin_dashboard' %}"><button>返回首页</button></a>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="main-content">
+        <!-- 增加功能 -->
+<form method="POST" action="{% url 'add_participation' %}">
+    {% csrf_token %}
+    <div class="input-row">
+        <label for="user_id">学号</label>
+        <!-- 拉框选择学号 -->
+        <select id="user_id" name="user_id" required>
+            <option value="" disabled selected>请选择学号</option>
+            {% for user in users %}
+                <option value="{{ user.user_id }}" {% if user.user_id == user_id %}selected{% endif %}>
+                    {{ user.user_id }} - {{ user.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="event_id">项目编号</label>
+        <!-- 拉框选择项目编号 -->
+        <select id="event_id" name="event_id" required>
+            <option value="" disabled selected>请选择项目编号</option>
+            {% for event in events %}
+                <option value="{{ event.event_id }}" {% if event.event_id == event_id %}selected{% endif %}>
+                    {{ event.event_id }} - {{ event.event_name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="group">组别</label>
+        <input type="text" id="group" name="group" required>
+    </div>
+    <div class="buttons">
+        <button type="submit">新增</button>
+    </div>
+</form>
+
+        <!-- 错误信息 -->
+        {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        {% endif %}
+
+       <!-- 查询功能 -->
+<form method="GET" action="{% url 'query_participation' %}">
+    <div class="input-row">
+        <!-- 查询学号输入框 -->
+        <label for="user_id">学号</label>
+        <input type="text" id="user_id" name="user_id" value="{{ user_id }}" placeholder="请输入学号">
+
+        <!-- 查询项目编号输入框 -->
+        <label for="event_id">项目编号</label>
+        <input type="text" id="event_id" name="event_id" value="{{ event_id }}" placeholder="请输入项目编号">
+    </div>
+    <div class="buttons">
+        <button type="submit">查询/刷新</button>
+    </div>
+</form>
+
+
+        <!-- 表格 -->
+        <form method="POST" action="{% url 'delete_selected_participations' %}">
+            {% csrf_token %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="checkbox-column">
+                            <input type="checkbox" id="select-all">
+                        </th>
+                        <th>学号</th>
+                        <th>姓名</th>
+                        <th>项目编号</th>
+                        <th>项目名称</th>
+                        <th>组别</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if page_obj %}
+                        {% for contestant in page_obj %}
+                            <tr>
+                                <td class="checkbox-column">
+                                    <input type="checkbox" name="selected_participations" value="{{ contestant.id }}">
+                                </td>
+                                <td>{{ contestant.user.user_id }}</td>
+                                <td>{{ contestant.user.name }}</td>
+                                <td>{{ contestant.event.event_id }}</td>
+                                <td>{{ contestant.event.event_name }}</td>
+                                <td>{{ contestant.group }}组</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6">没有数据（点击查询刷新）。</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6">没有数据（点击查询刷新）。</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <!-- 提交按钮 -->
+            <div class="buttons">
+                <button type="submit">删除选中项</button>
+            </div>
+        </form>
+
+        <!-- 分页 -->
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1&user_id={{ user_id }}&event_id={{ event_id }}">首页</a>
+                <a href="?page={{ page_obj.previous_page_number }}&user_id={{ user_id }}&event_id={{ event_id }}">上一页</a>
+            {% else %}
+                <span class="disabled">首页</span>
+                <span class="disabled">上一页</span>
+            {% endif %}
+
+            <span class="current-page">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&user_id={{ user_id }}&event_id={{ event_id }}">下一页</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&user_id={{ user_id }}&event_id={{ event_id }}">末页</a>
+            {% else %}
+                <span class="disabled">下一页</span>
+                <span class="disabled">末页</span>
+            {% endif %}
+        </div>
+
+        <script>
+            // 全选框功能
+            document.getElementById('select-all').addEventListener('change', function() {
+                var checkboxes = document.querySelectorAll('input[name="selected_participations"]');
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = document.getElementById('select-all').checked;
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
